@@ -25,4 +25,4 @@ def generate_pfp():
         return jsonify({"error": f"User '{username}' not found."}), 404
 
 
-app.run('localhost', 5000, debug=True)
+debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() in ['true', '1', 't']
