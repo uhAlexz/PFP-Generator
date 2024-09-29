@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Minecraft PFP Generator</title>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="text-center">
+        <h1 class="text-xl font-bold mb-4">Generate Your Minecraft PFP</h1>
+
+        <!-- Color Pickers for Gradient Colors -->
+        <label for="color1">Select First Color:</label>
+        <input type="color" id="color1" value="#ff0000" class="m-2">
+        <label for="color2">Select Second Color:</label>
+        <input type="color" id="color2" value="#0000ff" class="m-2">
+
+        <!-- Input for UUID -->
+        <input type="text" id="uuidInput" placeholder="Enter UUID" class="bg-gray-300 rounded-xl p-2 hover:bg-gray-400 transition-color duration-300 m-2">
+
+        <!-- Button to Generate the Image -->
+        <button id="generateBtn" class="bg-blue-500 text-white rounded-xl px-4 py-2 hover:bg-blue-700">
+            Generate Image
+        </button>
+
+        <!-- Canvas where the image will be drawn -->
+        <canvas id="gradientCanvas" width="400" height="400" class="hidden mt-4"></canvas>
+
+        <!-- Button to Download the Generated Image -->
+        <a id="downloadLink" download="minecraft_profile_picture.png" class="hidden mt-4 bg-green-500 text-white rounded-xl px-4 py-2 hover:bg-green-700">
+            Download Image
+        </a>
+
+        <script>
+            document.getElementById('generateBtn').addEventListener('click', function() {
+                // Get the colors from the input
+                const color1 = document.getElementById('color1').value;
+                const color2 = document.getElementById('color2').value;
+                const uuid = document.getElementById('uuidInput').value;
+
+                // Get the canvas and its context
+                const canvas = document.getElementById('gradientCanvas');
+                const ctx = canvas.getContext('2d');
+
+                // Create the gradient
+                const gradient = ctx.createLinearGradient(0, 0, 400, 400);
+                gradient.addColorStop(0, color1);  // Start color
+                gradient.addColorStop(1, color2);  // End color
+
+                // Fill the canvas with the gradient
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 400, 400);
+
+                // Create the URL for the Minecraft head image
+                const skinUrl = `https://skins.mcstats.com/skull/${uuid}?scale=1&fallbackTexture=steve&overlay=true&cropMeasurement=pixels&expandMeasurement=pixels&cropLeft=0&cropRight=0&cropTop=0&cropBottom=0&expandLeft=0&expandRight=0&expandTop=0&expandBottom=0&alwaysSquare=true&grayscale=false`;
+
+                // Load the player head image
+                const playerHeadImg = new Image();
+                playerHeadImg.src = skinUrl;
+
+                // Draw the player head once the image has loaded
+                playerHeadImg.onload = function() {
+                    const headSize = 300; // Size of the player head
+                    const x = (canvas.width - headSize) / 2; // Center the image
+                    const y = (canvas.height - headSize) / 2; // Center the image
+                    ctx.drawImage(playerHeadImg, x, y, headSize, headSize);
+                    
+                    // Show the canvas and download button
+                    canvas.classList.remove('hidden');
+
+                    // Create a data URL for the download
+                    const dataURL = canvas.toDataURL('image/png');
+
+                    // Update the download link and show it
+                    const downloadLink = document.getElementById('downloadLink');
+                    downloadLink.href = dataURL;
+                    downloadLink.classList.remove('hidden');
+                };
+                
+                playerHeadImg.onerror = function() {
+                    alert("Error loading the Minecraft skin. Please check the UUID.");
+                };
+            });
+        </script>
+    </div>
+</body>
+</html>
