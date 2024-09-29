@@ -12,7 +12,7 @@ app.secret_key = os.getenv("SECRET_KEY")
 
 @app.route("/")
 def index():
-    return render_template('betterindex.html')
+    return render_template('index.html')
 
 @app.post("/generate_pfp")
 def generate_pfp():
